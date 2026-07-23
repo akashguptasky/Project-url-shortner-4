@@ -31,8 +31,12 @@ function showError(msg) {
 
 function showResult(data) {
   errorEl.classList.add("hidden");
-  shortLink.textContent = data.shortUrl;
-  shortLink.href = data.shortUrl;
+  // Build the short link from the page's own origin so it always matches the
+  // real public URL. On Codespaces the server is proxied via localhost internally,
+  // so the server-built shortUrl can say "localhost" - the browser origin is reliable.
+  const shortUrl = window.location.origin + "/" + data.urlCode;
+  shortLink.textContent = shortUrl;
+  shortLink.href = shortUrl;
   urlCodeEl.textContent = data.urlCode;
   resultEl.classList.remove("hidden");
   copyBtn.textContent = "Copy";

@@ -25,9 +25,11 @@ const shortUrl = async function (req, res) {
         
         
         //===================================================
-        // Dynamic baseUrl: http://localhost:3000 locally, the public https URL on Codespaces
+        // Dynamic baseUrl: http://localhost:3000 locally, the public https URL on Codespaces.
+        // Prefer x-forwarded-* headers set by the Codespaces/reverse proxy over the raw host.
         const proto = req.headers["x-forwarded-proto"] || req.protocol
-        const baseUrl = `${proto}://${req.get("host")}`
+        const host = req.headers["x-forwarded-host"] || req.get("host")
+        const baseUrl = `${proto}://${host}`
         let cachedProfileData = await safeGet(`${longUrl}`)
         if (cachedProfileData) {
             let data = JSON.parse(cachedProfileData)

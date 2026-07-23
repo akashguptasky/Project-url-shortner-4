@@ -1,6 +1,38 @@
 # Project-url-shortner-4
 # Radon
 
+A URL shortener with an Express + MongoDB backend and a static frontend served from the same server.
+
+## Run it (local or GitHub Codespaces)
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+2. Create a `.env` file (copy `.env.example`) and set your MongoDB connection string:
+   ```
+   MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/group50Database
+   ```
+   Redis is optional — leave `REDIS_*` blank to run without caching.
+3. Start the server:
+   ```
+   npm start
+   ```
+4. Open the app:
+   - Local: http://localhost:3000
+   - Codespaces: open the forwarded **port 3000** URL (it is set to *public* in `.devcontainer/devcontainer.json`).
+
+### Secrets
+`.env` is git-ignored and is **never** pushed. In Codespaces, set `MONGO_URI` as a
+**Codespaces secret** (Settings → Secrets) instead of a file. Also allow network access
+`0.0.0.0/0` in MongoDB Atlas so Codespaces can connect.
+
+## API
+- `POST /url/shorten` — body `{ "longUrl": "https://..." }` → returns the short URL.
+- `GET /:urlCode` — redirects to the original URL.
+
+---
+
 ## Scalable URL Shortner Project Requirement
 
 ## Phase I

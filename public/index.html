@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noxship URL Shortener</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <header>
+      <h1>🔗 Noxship</h1>
+      <p class="sub">Shorten long URLs — fast, cached &amp; shareable.</p>
+    </header>
+
+    <form id="shorten-form" autocomplete="off">
+      <input
+        type="text"
+        id="longUrl"
+        placeholder="https://your-very-long-url.com/..."
+        required
+      />
+      <button type="submit" id="submitBtn">Shorten</button>
+    </form>
+
+    <p id="error" class="error hidden"></p>
+
+    <section id="result" class="result hidden">
+      <label>Your short URL</label>
+      <div class="short-row">
+        <a id="shortLink" href="#" target="_blank" rel="noopener"></a>
+        <button id="copyBtn" type="button">Copy</button>
+      </div>
+      <p class="meta">Code: <span id="urlCode"></span></p>
+    </section>
+
+    <footer>
+      <span>Noxship · URL Shortener</span>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

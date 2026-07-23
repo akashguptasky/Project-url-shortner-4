@@ -5,23 +5,10 @@ const submitLabel = submitBtn.querySelector("span");
 const errorEl = document.getElementById("error");
 const resultEl = document.getElementById("result");
 const shortLink = document.getElementById("shortLink");
-const urlCodeEl = document.getElementById("urlCode");
+const openBtn = document.getElementById("openBtn");
 const copyBtn = document.getElementById("copyBtn");
 
-// Fill the background with faded sample long URLs (pure decoration)
-(function paintBackground() {
-  const samples = [
-    "https://example.com/products/category/electronics/phones?id=98213&ref=homepage&utm_source=newsletter&utm_campaign=q3",
-    "https://docs.google.com/spreadsheets/d/1aBcD3fGhIjKlMnOpQrStUvWxYz/edit#gid=482910345",
-    "https://www.amazon.in/dp/B0C4XYZ123/ref=sr_1_3?keywords=mechanical+keyboard&qid=1720423",
-    "https://maps.app.example.com/place/Some+Very+Long+Place+Name/@28.6139,77.2090,17z/data=i3m1i4b1",
-  ];
-  let text = "";
-  for (let i = 0; i < 40; i++) {
-    text += samples[i % samples.length] + "   ";
-  }
-  document.getElementById("bgNoise").textContent = text;
-})();
+document.getElementById("year").textContent = new Date().getFullYear();
 
 function showError(msg) {
   errorEl.textContent = msg;
@@ -37,7 +24,7 @@ function showResult(data) {
   const shortUrl = window.location.origin + "/" + data.urlCode;
   shortLink.textContent = shortUrl;
   shortLink.href = shortUrl;
-  urlCodeEl.textContent = data.urlCode;
+  openBtn.href = shortUrl;
   resultEl.classList.remove("hidden");
   copyBtn.textContent = "Copy";
   copyBtn.classList.remove("copied");
@@ -49,7 +36,7 @@ form.addEventListener("submit", async function (e) {
   if (!longUrl) return;
 
   submitBtn.disabled = true;
-  submitLabel.textContent = "SNIPPING...";
+  submitLabel.textContent = "Shortening…";
 
   try {
     // Relative path -> same origin (works both locally and on Codespaces)
@@ -70,7 +57,7 @@ form.addEventListener("submit", async function (e) {
     showError("Could not reach the server. Is the backend running?");
   } finally {
     submitBtn.disabled = false;
-    submitLabel.textContent = "SNIP IT";
+    submitLabel.textContent = "Shorten";
   }
 });
 

@@ -1,9 +1,19 @@
 const validation = require('../validation/validation')
 const urlModel = require('../models/urlModel')
 const shortid = require('shortid');
+const QRCode = require('qrcode');
 
 // Safe redis wrappers - if Redis is down the app keeps running on Mongo instead of crashing
 const { safeGet, safeSet } = require('../config/redisClient');
+
+// Generate a QR code (PNG data URL) for a link using the 'qrcode' npm package
+const makeQr = function (url) {
+    return QRCode.toDataURL(url, {
+        width: 240,
+        margin: 2,
+        color: { dark: "#0b0b12", light: "#ffffff" },
+    });
+};
 
 
 const shortUrl = async function (req, res) {
@@ -25,22 +35,27 @@ const shortUrl = async function (req, res) {
         
         
         //===================================================
-        // Dynamic baseUrl: http://localhost:3000 locally, the public https URL on Codespaces.
-        // Prefer x-forwarded-* headers set by the Codespaces/reverse proxy over the raw host.
+        // baseUrl: browser's Origin header is the reliable public URL (Codespaces proxies
+        // Host to localhost). Fall back to the request host for non-browser clients (Postman).
         const proto = req.headers["x-forwarded-proto"] || req.protocol
         const host = req.headers["x-forwarded-host"] || req.get("host")
-        const baseUrl = `${proto}://${host}`
+        const baseUrl = req.headers.origin || `${proto}://${host}`
+
         let cachedProfileData = await safeGet(`${longUrl}`)
         if (cachedProfileData) {
             let data = JSON.parse(cachedProfileData)
-            return res.status(200).send({ status: true, data: { urlCode: data.urlCode, longUrl: longUrl, shortUrl: `${baseUrl}/${data.urlCode}` } })
+            const shortUrl = `${baseUrl}/${data.urlCode}`
+            const qrCode = await makeQr(shortUrl)
+            return res.status(200).send({ status: true, data: { urlCode: data.urlCode, longUrl: longUrl, shortUrl, qrCode } })
         } else {
             const isUrlExist = await urlModel.findOne({ longUrl: longUrl })
 
             if (isUrlExist) {
                 await safeSet(`${isUrlExist.longUrl}`, JSON.stringify(isUrlExist))
 
-                return res.status(200).send({ status: true, data: { urlCode: isUrlExist.urlCode, longUrl: longUrl, shortUrl: `${baseUrl}/${isUrlExist.urlCode}` } })
+                const shortUrl = `${baseUrl}/${isUrlExist.urlCode}`
+                const qrCode = await makeQr(shortUrl)
+                return res.status(200).send({ status: true, data: { urlCode: isUrlExist.urlCode, longUrl: longUrl, shortUrl, qrCode } })
             }
             else {
                 let myObject = {
@@ -51,7 +66,9 @@ const shortUrl = async function (req, res) {
 
                 await urlModel.create(myObject);
                 await safeSet(`${longUrl}`, JSON.stringify(myObject))
-                res.status(201).send({ status: true, data: myObject })
+
+                const qrCode = await makeQr(myObject.shortUrl)
+                res.status(201).send({ status: true, data: { ...myObject, qrCode } })
             }
 
         }

@@ -397,6 +397,58 @@ h1 {
   border-color: var(--ring);
 }
 
+/* --- QR block --- */
+.qr-block {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+}
+
+.qr-frame {
+  flex-shrink: 0;
+  background: #fff;
+  padding: 8px;
+  border-radius: 10px;
+  line-height: 0;
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.6);
+}
+
+#qrImg {
+  display: block;
+  width: 116px;
+  height: 116px;
+  border-radius: 4px;
+  image-rendering: pixelated;
+}
+
+.qr-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.qr-text strong {
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.qr-text small {
+  color: var(--faint);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+
+.btn-qr {
+  align-self: flex-start;
+  padding: 9px 16px;
+}
+
 /* --- Features --- */
 .features {
   list-style: none;
@@ -485,5 +537,12 @@ h1 {
   .btn-open {
     flex: 1;
     text-align: center;
+  }
+  .qr-block {
+    flex-direction: column;
+    text-align: center;
+  }
+  .btn-qr {
+    align-self: center;
   }
 }

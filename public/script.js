@@ -7,6 +7,8 @@ const resultEl = document.getElementById("result");
 const shortLink = document.getElementById("shortLink");
 const openBtn = document.getElementById("openBtn");
 const copyBtn = document.getElementById("copyBtn");
+const qrImg = document.getElementById("qrImg");
+const qrDownload = document.getElementById("qrDownload");
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -28,6 +30,16 @@ function showResult(data) {
   resultEl.classList.remove("hidden");
   copyBtn.textContent = "Copy";
   copyBtn.classList.remove("copied");
+
+  // Show the QR code returned by the server (generated with the 'qrcode' package)
+  const qrBlock = qrImg.closest(".qr-block");
+  if (data.qrCode) {
+    qrImg.src = data.qrCode;
+    qrDownload.href = data.qrCode;
+    qrBlock.style.display = "";
+  } else {
+    qrBlock.style.display = "none";
+  }
 }
 
 form.addEventListener("submit", async function (e) {

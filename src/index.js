@@ -17,7 +17,8 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // MONGO_URI comes from an env var (set it in .env / a Codespaces secret).
 // The old cluster was deleted - set a new free MongoDB Atlas URI here.
-const MONGO_URI = process.env.MONGO_URI
+// .trim() removes stray spaces/newlines from copy-paste that break the connection string.
+const MONGO_URI = (process.env.MONGO_URI || "").trim()
 if (!MONGO_URI) {
     console.log("⚠️  MONGO_URI is not set! Add MONGO_URI to your .env file or the DB won't connect.")
 } else {
